@@ -33,6 +33,9 @@
     if(randPos1 == randPos2){
         randPos2 = Math.floor(Math.random() * (max - min +1)) + min;
     }
+
+    smallAdInterval = randPos1 ;
+    bigAdInterval = randPos2;
     /***********************/
 
     (function (i, s, o, g, r, a, m) {
@@ -183,32 +186,7 @@
                                     });`;
                             document.head.appendChild(adSc2);
                         </script>
-                        <script>
-                            googletag.cmd.push(function() {
-                             googletag.pubads().addEventListener('slotRenderEnded', function(event) {
-                                switch(event.slot.getAdUnitPath()){
-                                    case '/42115163/IP_start.indusos.com_320X100_Mobile':
-                                            //console.log('Ad 1 HTML loaded@ '+  (Date.now()-timerStart) + ' ms ');
-                                            document.querySelector('#div-gpt-ad-1551357349271-9 div iframe').onload = function(){ 
-                                                document.getElementById('top_news_ads1').style.display = 'list-item';
-                                                //console.log('Ad 1 Content loaded@ '+  (Date.now()-timerStart) + ' ms ');
-                                                findHighestNode(document.documentElement.childNodes);
-                                                
-                                            }
-                                            break;
-                                    case '/42115163/IP_start.indusos.com_300X250_Mobile':
-                                            //console.log('Ad 2 HTML loaded@ '+  (Date.now()-timerStart) + ' ms ');
-                                            document.querySelector('#div-gpt-ad-1565767605361-0 div iframe').onload = function(){
-                                                document.getElementById('top_news_ads2').style.display = 'list-item';
-                                                //console.log('Ad 2 Content loaded@ '+  (Date.now()-timerStart) + ' ms ');
-                                                findHighestNode(document.documentElement.childNodes);
-                                                
-                                            }
-                                            break;
-                                    }
-                                });
-                               });
-                        </script>
+
                     </div>
                 </div>
             </section>
@@ -267,8 +245,8 @@
                 data.rows = data.rows.sort((a,b) => { return b.publishTime - a.publishTime }); // fix the orders BUG:dailyhunt
                 
                 
-                newsArr1 = data.rows.slice(0,9); // 9 render now
-                newsArr2 = data.rows.slice(9); // 6 for later use (Loadmore)
+                newsArr1 = data.rows.slice(0,10); // 10 render now
+                newsArr2 = data.rows.slice(10); // 15-10 = 5 for later use (Loadmore)
 
                 var sel1,sel2,low1,low2;
                 if(smallAdInterval < bigAdInterval)
@@ -293,8 +271,8 @@
                 var $allNews = document.getElementById('all_news')
                 var $smallAd = document.getElementById(sel1);
 
-                //9 news
-                for(var i =0; i<9; i++)
+                //10 news
+                for(var i =0; i<10; i++)
                 {
                     let html = getnewsItemHtml(i, newsArr1[i]);
                     if(i<low1)
@@ -447,6 +425,34 @@
             return li;
         }
     </script>
+
+    <script>
+    googletag.cmd.push(function() {
+     googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+        switch(event.slot.getAdUnitPath()){
+            case '/42115163/IP_start.indusos.com_320X100_Mobile':
+                    //console.log('Ad 1 HTML loaded@ '+  (Date.now()-timerStart) + ' ms ');
+                    //document.querySelector('#div-gpt-ad-1551357349271-9 div').onload = function(){ 
+                        //document.getElementById('top_news_ads1').style.display = 'list-item';
+                        //console.log('Ad 1 Content loaded@ '+  (Date.now()-timerStart) + ' ms ');
+                    //}
+                    document.getElementById('top_news_ads1').style.display = 'list-item';
+                    findHighestNode(document.documentElement.childNodes);
+                    break;
+            case '/42115163/IP_start.indusos.com_300X250_Mobile':
+                    //console.log('Ad 2 HTML loaded@ '+  (Date.now()-timerStart) + ' ms ');
+                    //document.querySelector('#div-gpt-ad-1565767605361-0 div').onload = function(){
+                        //document.getElementById('top_news_ads2').style.display = 'list-item';
+                        //console.log('Ad 2 Content loaded@ '+  (Date.now()-timerStart) + ' ms ');
+                    //}
+                    document.getElementById('top_news_ads2').style.display = 'list-item';
+                    findHighestNode(document.documentElement.childNodes);
+                    break;
+            }
+        });
+       });
+</script>
+
     <script src="./assets/js/crypto-js-bundle.min.js" onload="fetchNews();"></script>
     <script id="search_siteplug"></script>
     <script id="site_redirect"></script>
