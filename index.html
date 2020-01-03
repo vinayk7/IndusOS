@@ -18,7 +18,23 @@
     }
     </style>
     <script>
-        
+    
+    /***************************
+    **** NEWS - AD POSITION ****
+    ***************************/
+    var smallAdInterval = 8 ;
+    var bigAdInterval = 0;
+
+    /*AD POSITION RANDOMIZER*/
+    var min =0
+    var max =9;
+    var randPos1 = Math.floor(Math.random() * (max - min +1)) + min;
+    var randPos2 = Math.floor(Math.random() * (max - min +1)) + min;
+    if(randPos1 == randPos2){
+        randPos2 = Math.floor(Math.random() * (max - min +1)) + min;
+    }
+    /***********************/
+
     (function (i, s, o, g, r, a, m) {
         i['GoogleAnalyticsObject'] = r;
         i[r] = i[r] || function () {
@@ -39,15 +55,12 @@
         ga('send', 'pageview');        
 
         var timerStart = Date.now();
-        console.log("initialised @: %c"+ (Date.now()-timerStart) + ' ms', 'color:blue;');///DEBUG 
+        //console.log("initialised @: %c"+ (Date.now()-timerStart) + ' ms', 'color:blue;');///DEBUG 
 
         window.addEventListener('load', function(){
-            console.log("Page load complete@: %c "+ (Date.now()-timerStart) + ' ms ', 'color:white;background-color:darkviolet'); 
+            //console.log("Page load complete@: %c "+ (Date.now()-timerStart) + ' ms ', 'color:white;background-color:darkviolet'); 
             //alert('Page loading took: ' +  ((Date.now()-timerStart)/1000).toFixed(2) + ' seconds' )
         });
-
-        var smallAdInterval = 2;
-        var bigAdInterval = 6;
         
         var docHeight = 0;
         var winHeight = 0;
@@ -55,7 +68,8 @@
 
         var lastBottomPos = 0;
         var alreadyLoading = false;
-        var newsArr = [];
+        var newsArr1 = [];
+        var newsArr2 = [];
 
         findHighestNode(document.documentElement.childNodes);
                 
@@ -123,59 +137,78 @@
                     <div class="indus_full" id="indus_full">
                         <ul id="all_news" class="top_news_section top-buffer">
 
-                            <li id="top_news_ads1" style="display:none;" onclick="alert();">
-                                <div id="div-gpt-ad-1551357349271-9">
-                                    <script type="text/javascript">
-                                    googletag.cmd.push(function() {
-                                        googletag.pubads().display("/42115163/IP_start.indusos.com_320X100_Mobile", [320, 100], "div-gpt-ad-1551357349271-9");
-                                    });
-                                    </script>
-                                </div>
-                                <script type="text/javascript">
-                                /*
-                                (function(){function LS(){var o='script',s=top.document,a=s.createElement(o),m=s.getElementsByTagName(o)[0],p=location.protocol,t="https:"==p?"s":"",d=new Date(),u=p+'//hb'+t+'.ph.affinity.com/v5/indusos.com/inpara.php?t='+d.getDate()+d.getMonth()+d.getHours();a.async=1;a.src=u;m.parentNode.insertBefore(a,m)}
-                                try{window.__IBC___WRAPPER__=document.getElementById('div-gpt-ad-1551357349271-9')
-                                LS()}catch(e){}})()
-                                */
-                                </script>
-                            </li>
+                        </ul>
 
+                        <!-- fixing the relative position of small - big Ads -->
+                        <script>
+
+                            var snip1 =`
+                            <li id="top_news_ads1" style="display:none;">
+                                <div id="div-gpt-ad-1551357349271-9">
+                               
+                                </div>
+                            </li>`;
+
+                            var snip2 =`
                             <li id="top_news_ads2" style="display:none;">
                                 <div id="div-gpt-ad-1565767605361-0">
-                                    <script type="text/javascript">
-                                    googletag.cmd.push(function() {
-                                        googletag.pubads().display("/42115163/IP_start.indusos.com_300X250_Mobile", [300,250],"div-gpt-ad-1565767605361-0");
-                                    });
-                                    </script>
+              
                                 </div>
-                            </li>
-                            <script>
-                                googletag.cmd.push(function() {
-                                 googletag.pubads().addEventListener('slotRenderEnded', function(event) {
-                                    switch(event.slot.getAdUnitPath()){
-                                        case '/42115163/IP_start.indusos.com_320X100_Mobile':
-                                                console.log('Ad 1 HTML loaded@ '+  (Date.now()-timerStart) + ' ms ');
-                                                document.querySelector('#div-gpt-ad-1551357349271-9 div iframe').onload = function(){ 
-                                                    document.getElementById('top_news_ads1').style.display = 'list-item';
-                                                    console.log('Ad 1 Content loaded@ '+  (Date.now()-timerStart) + ' ms ');
-                                                    findHighestNode(document.documentElement.childNodes);
-                                                    
-                                                }
-                                                break;
-                                        case '/42115163/IP_start.indusos.com_300X250_Mobile':
-                                                console.log('Ad 2 HTML loaded@ '+  (Date.now()-timerStart) + ' ms ');
-                                                document.querySelector('#div-gpt-ad-1565767605361-0 div iframe').onload = function(){
-                                                    document.getElementById('top_news_ads2').style.display = 'list-item';
-                                                    console.log('Ad 2 Content loaded@ '+  (Date.now()-timerStart) + ' ms ');
-                                                    findHighestNode(document.documentElement.childNodes);
-                                                    
-                                                }
-                                                break;
-                                        }
-                                    });
-                                   });
-                            </script>
-                        </ul>
+                            </li>`;
+
+
+
+                            //append Ad divs depending on the relative order
+                            var AdSinp = '';
+                            if(smallAdInterval<=bigAdInterval)
+                            {
+                                AdSnip = snip1 + snip2;
+                            }else
+                            {
+                                AdSnip = snip2 + snip1;
+                            }
+ 
+                            document.getElementById('all_news').innerHTML = AdSnip;
+
+
+                            var adSc1 = document.createElement("script");
+                            adSc1.innerHTML = `googletag.cmd.push(function() {
+                                        googletag.pubads().display("/42115163/IP_start.indusos.com_320X100_Mobile", [320, 100], "div-gpt-ad-1551357349271-9");
+                                    });`;
+                            document.head.appendChild(adSc1);
+
+                            var adSc2 = document.createElement("script");
+                            adSc2.innerHTML = `googletag.cmd.push(function() {
+                                        googletag.pubads().display("/42115163/IP_start.indusos.com_300X250_Mobile", [300,250],"div-gpt-ad-1565767605361-0");
+                                    });`;
+                            document.head.appendChild(adSc2);
+                        </script>
+                        <script>
+                            googletag.cmd.push(function() {
+                             googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+                                switch(event.slot.getAdUnitPath()){
+                                    case '/42115163/IP_start.indusos.com_320X100_Mobile':
+                                            //console.log('Ad 1 HTML loaded@ '+  (Date.now()-timerStart) + ' ms ');
+                                            document.querySelector('#div-gpt-ad-1551357349271-9 div iframe').onload = function(){ 
+                                                document.getElementById('top_news_ads1').style.display = 'list-item';
+                                                //console.log('Ad 1 Content loaded@ '+  (Date.now()-timerStart) + ' ms ');
+                                                findHighestNode(document.documentElement.childNodes);
+                                                
+                                            }
+                                            break;
+                                    case '/42115163/IP_start.indusos.com_300X250_Mobile':
+                                            //console.log('Ad 2 HTML loaded@ '+  (Date.now()-timerStart) + ' ms ');
+                                            document.querySelector('#div-gpt-ad-1565767605361-0 div iframe').onload = function(){
+                                                document.getElementById('top_news_ads2').style.display = 'list-item';
+                                                //console.log('Ad 2 Content loaded@ '+  (Date.now()-timerStart) + ' ms ');
+                                                findHighestNode(document.documentElement.childNodes);
+                                                
+                                            }
+                                            break;
+                                    }
+                                });
+                               });
+                        </script>
                     </div>
                 </div>
             </section>
@@ -223,248 +256,195 @@
                 })
                 .catch(err => console.log(err))
         }
+
         // RENDER NEWS TO THE DOM
+        //<-- cant put google add container creation code here becase this gets called only when news gets fetched from dailyhunts api; therefore google ad loading will get delayed by that much time
         const renderNews = data => {
             if (data && data.count > 0) {
 
-                console.log("Creating news feed DOM....");
+                //console.log("Creating news feed DOM....");
 
                 data.rows = data.rows.sort((a,b) => { return b.publishTime - a.publishTime }); // fix the orders BUG:dailyhunt
                 
-                newsArr = data.rows.slice(9);
-                data.rows = data.rows.slice(0,9);
+                
+                newsArr1 = data.rows.slice(0,9); // 9 render now
+                newsArr2 = data.rows.slice(9); // 6 for later use (Loadmore)
 
-                var fstblk = new DocumentFragment();
-                var secblk = new DocumentFragment();
-                var thdblk = new DocumentFragment();
+                var sel1,sel2,low1,low2;
+                if(smallAdInterval < bigAdInterval)
+                {
+                    //alert(1)
+                    sel1 = 'top_news_ads1';
+                    sel2 = 'top_news_ads2';
+                    low1 = smallAdInterval;
+                    low2 = bigAdInterval;
 
-                data.rows.forEach((i, idx) => {
+                    //top_news_ads1
+                }
+                else
+                {
+                    //alert(2)
+                    sel2 = 'top_news_ads1';
+                    sel1= 'top_news_ads2';
+                    low1 = bigAdInterval;
+                    low2 = smallAdInterval;
+                }
 
-                    if (idx === 0) {
+                var $allNews = document.getElementById('all_news')
+                var $smallAd = document.getElementById(sel1);
 
-                        let newsFragment = new DocumentFragment();
-
-                        let li = document.createElement('li');
-                        li.id = `top_news_${idx}`;
-
-                        let sourceImg = i.sourceLogo.replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, "25x25_60").replace(/{EXT}/g, "webp");
-                        sourceImg = sourceImg.replace('96x96_60', '20x20_60');
-
-                        if( (typeof i.images[0]!='undefined' )&& (i.images[0]!= null) && (i.images[0]!= '') )
-                        imgSrc = i.images[0].replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, "700x400_80").replace(/{EXT}/g, "webp");
-
-                        li.innerHTML = `<div class="top_div">
-                            <a id="news_href_0" href="${i.deepLinkUrl}">
-                                <div class="col-xs-12" id="pic">
-                                    <img
-                                        id="news_image_0"
-                                        class="img-r-esponsive img-rounded img-auto"
-                                        src="${imgSrc}"
-                                        alt="${i.source}">
-                                </div>
-                                <div class="col-xs-12">
-                                    <div class="first_top_news">
-                                        <div class="top_news_pro">
-                                            <img
-                                                src="${sourceImg}"
-                                                id="source_image_0"
-                                                class="img-r-esponsive img-auto"
-                                                alt="${i.source}">
-                                            <span class="source_name" id="source_name_0">${i.source}</span>
-                                        </div>
-                                        <b id="news_heading_0" class="bwrap">${i.title}</b>
-                                        <div class="source_image">
-                                            <h6 id="publishTime_0" class="publishTime" data-publish-ts="${i.publishTime}">${timeSince(i.publishTime)}</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>`;
-                        
-                        li.onclick = function(e) { 
-                                                                        e.preventDefault();
-                                                                        ga('send', 'event', 'ClickEvent', 'topNewsClicked', i.title, 
-                                                                                {
-                                                                                    hitCallback: function() {
-                                                                                      window.location.href= i.deepLinkUrl;
-                                                                                    }
-                                                                                }
-                                                                        ); 
-                        }
-                        newsFragment.appendChild(li);
-                        document.getElementById('all_news').insertBefore(newsFragment, document.getElementById('top_news_ads1'));
-
-                    } 
-                    else if(idx<=smallAdInterval)   // case (1) - in
+                //9 news
+                for(var i =0; i<9; i++)
+                {
+                    let html = getnewsItemHtml(i, newsArr1[i]);
+                    if(i<low1)
                     {
-                    
-                        let li = document.createElement('li');
-                        li.id = `top_news_${idx}`;
+                        html.classList.add("order_cls1");
 
-                        let sourceImg = i.sourceLogo.replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, "25x25_60").replace(/{EXT}/g, "webp");
-                        sourceImg = sourceImg.replace('96x96_60', '20x20_60');
-
-                        if( (typeof i.images[0]!='undefined' )&& (i.images[0]!= null) && (i.images[0]!= '') )
-                         imgSrc = i.images[0].replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, "60x60_60").replace(/{EXT}/g, "webp");
-
-                        li.innerHTML = `<div class="top_div">
-                            <a id="news_href_${idx}" href="${i.deepLinkUrl}">
-                                <div class="col-xs-9">
-                                    <div class="top_news_pro">
-                                        <img
-                                            id="source_image_${idx}"
-                                            class="top_mar"
-                                            src="${sourceImg}"
-                                            alt="${i.source}">
-                                        <span class="source_name" id="source_name_${idx}">${i.source}</span>
-                                    </div>
-                                    <b id="news_heading_${idx}" class="bwrap">${i.title}</b>
-                                    <div class="source_image">
-                                        <h6 id="publishTime_${idx}" class="publishTime" data-publish-ts="${i.publishTime}">${timeSince(i.publishTime)}</h6>
-                                    </div>
-                                </div>
-                                <div class="col-xs-3" id="pic">
-                                    <img
-                                        id="news_image_${idx}"
-                                        class="img-r-esponsive img-rounded img-auto feeds_right"
-                                        src="${imgSrc}"
-                                        alt="${i.source}">
-                                </div>
-                            </a>
-                        </div>`;
-
-                        li.onclick = function(e) { 
-                                                                        e.preventDefault();
-                                                                        ga('send', 'event', 'ClickEvent', 'regularNewsClicked', i.title, 
-                                                                                {
-                                                                                    hitCallback: function() {
-                                                                                      window.location.href= i.deepLinkUrl;
-                                                                                    }
-                                                                                }
-                                                                        ); 
-                                                        }
-
-                        fstblk.appendChild(li);
-                    }
-                    else if( ( idx >= smallAdInterval) && (idx <= bigAdInterval) ) // case (2) - mid
-                    {
- 
-                        if(fstblk){
-                            document.getElementById('all_news').insertBefore(fstblk, document.getElementById('top_news_ads1'));
-                            fstblk = null
+                        if(document.querySelector('.order_cls1')) // if  cls3 rendered before
+                        {
+                            var check1 = document.querySelectorAll('.order_cls1');
+                            if(check1.length>0)
+                            {
+                                $allNews.insertBefore(html, check1[check1.length-1].nextSibling);
+                                //append after last of that type .order_cls1
+                            }
                         }
-
-                        let li = document.createElement('li');
-                        li.id = `top_news_${idx}`;
-
-                        let sourceImg = i.sourceLogo.replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, "25x25_60").replace(/{EXT}/g, "webp");
-                        sourceImg = sourceImg.replace('96x96_60', '20x20_60');
-
-                        if( (typeof i.images[0]!='undefined' )&& (i.images[0]!= null) && (i.images[0]!= '') )
-                        imgSrc = i.images[0].replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, "60x60_60").replace(/{EXT}/g, "webp");
-
-                        li.innerHTML = `<div class="top_div">
-                            <a id="news_href_${idx}" href="${i.deepLinkUrl}">
-                                <div class="col-xs-9">
-                                    <div class="top_news_pro">
-                                        <img
-                                            id="source_image_${idx}"
-                                            class="top_mar"
-                                            src="${sourceImg}"
-                                            alt="${i.source}">
-                                        <span class="source_name" id="source_name_${idx}">${i.source}</span>
-                                    </div>
-                                    <b id="news_heading_${idx}" class="bwrap">${i.title}</b>
-                                    <div class="source_image">
-                                        <h6 id="publishTime_${idx}" class="publishTime" data-publish-ts="${i.publishTime}">${timeSince(i.publishTime)}</h6>
-                                    </div>
-                                </div>
-                                <div class="col-xs-3" id="pic">
-                                    <img
-                                        id="news_image_${idx}"
-                                        class="img-r-esponsive img-rounded img-auto feeds_right"
-                                        src="${imgSrc}"
-                                        alt="${i.source}" onload="findHighestNode(document.documentElement.childNodes)">
-                                </div>
-                            </a>
-                        </div>`;
-
-                        li.onclick = function(e) { 
-                                                                        e.preventDefault();
-                                                                        ga('send', 'event', 'ClickEvent', 'regularNewsClicked', i.title, 
-                                                                                {
-                                                                                    hitCallback: function() {
-                                                                                      window.location.href= i.deepLinkUrl;
-                                                                                    }
-                                                                                }
-                                                                        ); 
-                                                        }
-                        secblk.appendChild(li);
-
-                    }
-                    else if(   (idx >= bigAdInterval) )  // case (3) - out
-                    {
-   
-                        if(secblk){
-                            document.getElementById('all_news').insertBefore(secblk, document.getElementById('top_news_ads2'));
-                            secblk = null
+                        else                                      // else prepend at very top
+                        {
+                            $allNews.prepend(html);
                         }
-
-                        let li = document.createElement('li');
-                        li.id = `top_news_${idx}`;
-
-                        let sourceImg = i.sourceLogo.replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, "25x25_60").replace(/{EXT}/g, "webp");
-                        sourceImg = sourceImg.replace('96x96_60', '20x20_60');
-
-                        if( (typeof i.images[0]!='undefined' )&& (i.images[0]!= null) && (i.images[0]!= '') )
-                         imgSrc = i.images[0].replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, "60x60_60").replace(/{EXT}/g, "webp");
-
-                        li.innerHTML = `<div class="top_div">
-                            <a id="news_href_${idx}" href="${i.deepLinkUrl}">
-                                <div class="col-xs-9">
-                                    <div class="top_news_pro">
-                                        <img
-                                            id="source_image_${idx}"
-                                            class="top_mar"
-                                            src="${sourceImg}"
-                                            alt="${i.source}">
-                                        <span class="source_name" id="source_name_${idx}">${i.source}</span>
-                                    </div>
-                                    <b id="news_heading_${idx}" class="bwrap">${i.title}</b>
-                                    <div class="source_image">
-                                        <h6 id="publishTime_${idx}" class="publishTime" data-publish-ts="${i.publishTime}">${timeSince(i.publishTime)}</h6>
-                                    </div>
-                                </div>
-                                <div class="col-xs-3" id="pic">
-                                    <img
-                                        id="news_image_${idx}"
-                                        class="img-r-esponsive img-rounded img-auto feeds_right"
-                                        src="${imgSrc}"
-                                        alt="${i.source}">
-                                </div>
-                            </a>
-                        </div>`;
-
-                        li.onclick = function(e) { 
-                                                                        e.preventDefault();
-                                                                        ga('send', 'event', 'ClickEvent', 'regularNewsClicked', i.title, 
-                                                                                {
-                                                                                    hitCallback: function() {
-                                                                                      window.location.href= i.deepLinkUrl;
-                                                                                    }
-                                                                                }
-                                                                        ); 
-                                                        }
-                        thdblk.appendChild(li);
                     }
-                    
-                });
-                document.getElementById('all_news').appendChild(thdblk);
+                    else if(i==low1) //small ad takes prec
+                    {
+                        html.classList.add("order_cls2");
+                        $allNews.insertBefore(html, $smallAd.nextSibling);
+                        //append after smallAd
+                    }
+                    else if(i>low1 && i< low2)
+                    {   
+                        html.classList.add("order_cls3");
+                        if(document.querySelector('.order_cls3')) // if  cls3 rendered before
+                        {
+                            var check1 = document.querySelectorAll('.order_cls3');
+                            if(check1.length>0)
+                            {
+                                $allNews.insertBefore(html, check1[check1.length-1].nextSibling);
+                            }
+                        }
+                        else                                      // else append after last of type .cls2
+                        {
+                            var check2 = document.querySelectorAll('.order_cls2');
+                            if(check2.length>0)
+                            {
+                                $allNews.insertBefore(html, check2[check2.length-1].nextSibling);
+                            }
+                        }
+                    }
+                    else if(i == low2) //big ad takes prec
+                    {
+                        html.classList.add("order_cls4");
+                        $allNews.insertBefore(html, document.getElementById(sel2).nextSibling);
+                    }
+                    else if(i>low2)
+                    {
+                        html.classList.add("order_cls5");
+                        document.getElementById('all_news').append(html);
+                    }
+                }
+    
                 findHighestNode(document.documentElement.childNodes)
                 
             } else {
                 console.log('Problem fetching the data.')
             }
+        }
+
+        function getnewsItemHtml(idx, i)
+        {
+            let li = document.createElement('li');
+            li.id = `top_news_${idx}`;
+
+            let sourceImg = i.sourceLogo.replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, "25x25_60").replace(/{EXT}/g, "webp");
+            sourceImg = sourceImg.replace('96x96_60', '20x20_60');
+
+
+            var newsImgSz = idx == 0?"700x400_80":"60x60_60";
+
+            if( (typeof i.images[0]!='undefined' )&& (i.images[0]!= null) && (i.images[0]!= '') )
+             imgSrc = i.images[0].replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, newsImgSz).replace(/{EXT}/g, "webp");
+ 
+            if(idx == 0)
+            {
+                li.innerHTML = `<div class="top_div" >
+                    <a id="news_href_0" href="${i.deepLinkUrl}">
+                        <div class="col-xs-12" id="pic">
+                            <img
+                                id="news_image_0"
+                                class="img-r-esponsive img-rounded img-auto"
+                                src="${imgSrc}"
+                                alt="${i.source}">
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="first_top_news">
+                                <div class="top_news_pro">
+                                    <img
+                                        src="${sourceImg}"
+                                        id="source_image_0"
+                                        class="img-r-esponsive img-auto"
+                                        alt="${i.source}">
+                                    <span class="source_name" id="source_name_0">${i.source}</span>
+                                </div>
+                                <b id="news_heading_0" class="bwrap">${i.title}</b>
+                                <div class="source_image">
+                                    <h6 id="publishTime_0" class="publishTime" data-publish-ts="${i.publishTime}">${timeSince(i.publishTime)}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>`;
+            }
+            else
+            {
+                li.innerHTML = `<div class="top_div">
+                    <a id="news_href_${idx}" href="${i.deepLinkUrl}">
+                        <div class="col-xs-9">
+                            <div class="top_news_pro">
+                                <img
+                                    id="source_image_${idx}"
+                                    class="top_mar"
+                                    src="${sourceImg}"
+                                    alt="${i.source}">
+                                <span class="source_name" id="source_name_${idx}">${i.source}</span>
+                            </div>
+                            <b id="news_heading_${idx}" class="bwrap">${i.title}</b>
+                            <div class="source_image">
+                                <h6 id="publishTime_${idx}" class="publishTime" data-publish-ts="${i.publishTime}">${timeSince(i.publishTime)}</h6>
+                            </div>
+                        </div>
+                        <div class="col-xs-3" id="pic">
+                            <img
+                                id="news_image_${idx}"
+                                class="img-r-esponsive img-rounded img-auto feeds_right"
+                                src="${imgSrc}"
+                                alt="${i.source}">
+                        </div>
+                    </a>
+                </div>`;
+            }
+
+            li.onclick = function(e) { 
+                            e.preventDefault();
+                            ga('send', 'event', 'ClickEvent', 'regularNewsClicked', i.title, 
+                                    {
+                                        hitCallback: function() {
+                                          window.location.href= i.deepLinkUrl;
+                                        }
+                                    }
+                            ); 
+            }
+
+            return li;
         }
     </script>
     <script src="./assets/js/crypto-js-bundle.min.js" onload="fetchNews();"></script>
@@ -475,7 +455,7 @@
 <script>
 
 window.addEventListener('DOMContentLoaded', (event) => {
-    console.log('DOM fully loaded and parsed');
+    //console.log('DOM fully loaded and parsed');
 
     //CSS CLASSES SETUP: based on device
     var mql = window.matchMedia('(max-width: 699px)');
@@ -619,7 +599,7 @@ function searchFunc () {
 
     var query = document.getElementById('search_in_page').value;
 
-    console.log(' : = '  + query + ' = :')
+    //console.log(' : = '  + query + ' = :')
     let node = document.getElementById('search_siteplug');
     document.body.removeChild(node);
 
@@ -796,7 +776,7 @@ window.addEventListener('load', function(){
 function handleScrollMobile() {
     if ( (docHeight - winHeight < (window.pageYOffset + 80)) && (window.pageYOffset + 80 >= lastBottomPos) ) {
         if (!alreadyLoading) {
-            console.log('%c Called!', 'background: #aaa; color: green');
+            //console.log('%c Called!', 'background: #aaa; color: green');
             alreadyLoading = true;
             lastBottomPos = window.pageYOffset + 50;
             appendRemainingNews();
@@ -807,7 +787,7 @@ function handleScrollMobile() {
 function appendRemainingNews()
 {
     var fstblk = new DocumentFragment();
-    newsArr.forEach((i, idx) => {
+    newsArr2.forEach((i, idx) => {
         idx++; // to fix the image offset bug
         let li = document.createElement('li');
         li.id = `top_news_${idx}`;
@@ -859,7 +839,8 @@ function appendRemainingNews()
     
     //document.getElementById('all_news').insertAfter(fstblk, document.querySelector('#all_news li:last-child'));
 
-    var refn = document.querySelector('#all_news li:last-child');
+    var refn = document.querySelectorAll('#all_news li');
+    refn = refn[refn.length - 1];
     refn.parentNode.insertBefore(fstblk, refn.nextSibling);
     findHighestNode(document.documentElement.childNodes);
     ga('send', 'event', 'ClickEvent', 'readMoreClicked', 'readmore');
