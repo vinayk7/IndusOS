@@ -576,7 +576,7 @@ addListenerMulti(search_dom_node, 'keyup', function(e){
     var validInput = true;
 
      if (validInput && e.keyCode === 13) {
-        ga('send', 'event', 'ClickEvent', 'SearchClicked', search_dom_node.value, {
+        ga('send', 'event', 'ClickEvent', 'SearchEntered', search_dom_node.value, {
             hitCallback: function() {
                 document.querySelector('.site_suggest_ads').innerHTML = '';
                 redirectFunc(search_dom_node.value);
