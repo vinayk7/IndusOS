@@ -251,17 +251,15 @@
                 var sel1,sel2,low1,low2;
                 if(smallAdInterval < bigAdInterval)
                 {
-                    //alert(1)
+                    //if small ad would come above big one
                     sel1 = 'top_news_ads1';
                     sel2 = 'top_news_ads2';
                     low1 = smallAdInterval;
                     low2 = bigAdInterval;
-
-                    //top_news_ads1
                 }
                 else
                 {
-                    //alert(2)
+                    //if bid ad would come before small one
                     sel2 = 'top_news_ads1';
                     sel1= 'top_news_ads2';
                     low1 = bigAdInterval;
@@ -274,7 +272,7 @@
                 //10 news
                 for(var i =0; i<10; i++)
                 {
-                    let html = getnewsItemHtml(i, newsArr1[i]);
+                    let html = getnewsItemHtml(i, newsArr1[i], i==0);
                     if(i<low1)
                     {
                         html.classList.add("order_cls1");
@@ -288,7 +286,7 @@
                                 //append after last of that type .order_cls1
                             }
                         }
-                        else                                      // else prepend at very top
+                        else                                                        // else prepend at very top
                         {
                             $allNews.prepend(html);
                         }
@@ -338,7 +336,7 @@
             }
         }
 
-        function getnewsItemHtml(idx, i)
+        function getnewsItemHtml(idx, i, big=false)
         {
             let li = document.createElement('li');
             li.id = `top_news_${idx}`;
@@ -346,13 +344,12 @@
             let sourceImg = i.sourceLogo.replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, "25x25_60").replace(/{EXT}/g, "webp");
             sourceImg = sourceImg.replace('96x96_60', '20x20_60');
 
-
-            var newsImgSz = idx == 0?"700x400_80":"60x60_60";
+            var newsImgSz = big?"700x400_80":"60x60_60";
 
             if( (typeof i.images[0]!='undefined' )&& (i.images[0]!= null) && (i.images[0]!= '') )
              imgSrc = i.images[0].replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, newsImgSz).replace(/{EXT}/g, "webp");
  
-            if(idx == 0)
+            if(big)
             {
                 li.innerHTML = `<div class="top_div" >
                     <a id="news_href_0" href="${i.deepLinkUrl}">
@@ -796,53 +793,10 @@ function handleScrollMobile() {
 function appendRemainingNews()
 {
     var fstblk = new DocumentFragment();
+
     newsArr2.forEach((i, idx) => {
-        idx++; // to fix the image offset bug
-        let li = document.createElement('li');
-        li.id = `top_news_${idx}`;
-
-        let sourceImg = i.sourceLogo.replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, "25x25_60").replace(/{EXT}/g, "webp");
-        sourceImg = sourceImg.replace('96x96_60', '20x20_60');
-
-        if( (typeof i.images[0]!='undefined' )&& (i.images[0]!= null) && (i.images[0]!= '') )
-        imgSrc = i.images[0].replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, "60x60_60").replace(/{EXT}/g, "webp");
-
-        li.innerHTML = `<div class="top_div">
-            <a id="news_href_${idx}" href="${i.deepLinkUrl}">
-                <div class="col-xs-9">
-                    <div class="top_news_pro">
-                        <img
-                            id="source_image_${idx}"
-                            class="top_mar"
-                            src="${sourceImg}"
-                            alt="${i.source}">
-                        <span class="source_name" id="source_name_${idx}">${i.source}</span>
-                    </div>
-                    <b id="news_heading_${idx}" class="bwrap">${i.title}</b>
-                    <div class="source_image">
-                        <h6 id="publishTime_${idx}" class="publishTime" data-publish-ts="${i.publishTime}">${timeSince(i.publishTime)}</h6>
-                    </div>
-                </div>
-                <div class="col-xs-3" id="pic">
-                    <img
-                        id="news_image_${idx}"
-                        class="img-r-esponsive img-rounded img-auto feeds_right"
-                        src="${imgSrc}"
-                        alt="${i.source}">
-                </div>
-            </a>
-        </div>`;
-
-        li.onclick = function(e) { 
-                                                e.preventDefault();
-                                                ga('send', 'event', 'ClickEvent', 'topNewsClicked', i.title, 
-                                                        {
-                                                            hitCallback: function() {
-                                                              window.location.href= i.deepLinkUrl;
-                                                            }
-                                                        }
-                                                ); 
-        }
+        idx +=10; // as array get reindexed after slice
+        let li = getnewsItemHtml(idx, i);
         fstblk.appendChild(li);
     });
     
