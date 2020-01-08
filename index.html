@@ -410,7 +410,14 @@
 
             li.onclick = function(e) { 
                             e.preventDefault();
-                            ga('send', 'event', 'ClickEvent', 'regularNewsClicked', i.title, 
+                            //Update: Jan 8 - regularNewsClicked should be split into 14 separate types one for each different (15 - 1 top news) = 14 positions
+                            let evtName = '';
+                            if(big){
+                                evtName = 'topNewsClicked';
+                            }else{
+                                evtName = 'regularNewsClickedPosition'+idx;
+                            }
+                            ga('send', 'event', 'ClickEvent', evtName, i.title, 
                                     {
                                         hitCallback: function() {
                                           window.location.href= i.deepLinkUrl;
