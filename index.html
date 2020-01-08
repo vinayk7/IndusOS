@@ -516,8 +516,11 @@ function fetchRecommends(res) {
         news_node.classList.add('fig_div');
         news_node.id = `fig_div_${i}`;
         let img_src = data[i]['iurl'].replace('36x36', '128x128');
-
-        let single_item = `<div class="panel-body" onclick="ga('send', 'event', 'ClickEvent', 'RecommendedClicked', '${data[i]['brand']}', {
+        // Update: Jan 8 - RecommendedClicked should be split into 8 separate types
+        // RecommendedClicked --> RecommendedClickedSlot1, RecommendedClickedSlot2 ... RecommendedClickedSlot8
+ 
+        var RecommendedSlot = i+1;
+        let single_item = `<div class="panel-body" onclick="ga('send', 'event', 'ClickEvent', 'RecommendedClickedSlot'+'${RecommendedSlot}', '${data[i]['brand']}', {
             hitCallback: function() {
                 window.location.href= '${data[i]['rurl']}';
             }
