@@ -6,7 +6,6 @@
      <meta content="utf-8" http-equiv="encoding">
     <meta content="gzip" http-equiv="content-encoding">
     <script src="https://www.googletagmanager.com/gtag/js?id=UA-47795566-10" defer="defer"></script>
-
     <script src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" defer="defer"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
@@ -18,25 +17,48 @@
     }
     </style>
     <script>
-    
+    var default_img = ''; // placeholder image when no image is  in dailyhunt api
     /***************************
     **** NEWS - AD POSITION ****
     ***************************/
+    var adOrdering = 2; // 1=fixed 2=random
+
+    /*FIXED AD POSITION*/
     var smallAdInterval = 8 ;
     var bigAdInterval = 0;
 
-    /*AD POSITION RANDOMIZER*/
-    var min =0
-    var max =9;
-    var randPos1 = Math.floor(Math.random() * (max - min +1)) + min;
-    var randPos2 = Math.floor(Math.random() * (max - min +1)) + min;
-    if(randPos1 == randPos2){
-        randPos2 = Math.floor(Math.random() * (max - min +1)) + min;
-    }
+    /*RANDOM AD POSITION*/
+    if(adOrdering == 2){
+        var min =0
+        var max =9;
+        var randPos1 = Math.floor(Math.random() * (max - min +1)) + min;
+        var randPos2 = Math.floor(Math.random() * (max - min +1)) + min;
+        if(randPos1 == randPos2){
+            randPos2 = Math.floor(Math.random() * (max - min +1)) + min;
+        }
 
-    smallAdInterval = randPos1 ;
-    bigAdInterval = randPos2;
+        smallAdInterval = randPos1 ;
+        bigAdInterval = randPos2;
+    }
     /***********************/
+
+    var getUrlParameter = function getUrlParameter(uri) {
+        var sPageURL = decodeURIComponent(uri),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+        var param_dict = {};
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+            param_dict[sParameterName[0]] = sParameterName[1];
+        }
+        return param_dict;
+    };
+
+    var current_parameter = getUrlParameter(window.location.search.substring(1))["IMEI"];
+    if(typeof current_parameter == 'undefined'){
+        current_parameter = getUrlParameter(window.location.search.substring(1))["imei"];
+    }
 
     (function (i, s, o, g, r, a, m) {
         i['GoogleAnalyticsObject'] = r;
@@ -52,40 +74,39 @@
 
     //ga(()=>{alert('ga loaded')});
 
-        ga('create', 'UA-47795566-10', function(tracker) { 
-            //console.log(tracker.get('clientId'));
-        });
-        ga('send', 'pageview');        
+    ga('create', 'UA-47795566-10', function(tracker) { 
+        //console.log(tracker.get('clientId'));
+    });
+    ga('send', 'pageview');        
 
-        var timerStart = Date.now();
-        //console.log("initialised @: %c"+ (Date.now()-timerStart) + ' ms', 'color:blue;');///DEBUG 
+    var timerStart = Date.now();
+    // console.log("initialised @: %c"+ (Date.now()-timerStart) + ' ms', 'color:blue;');///DEBUG 
 
-        window.addEventListener('load', function(){
-            //console.log("Page load complete@: %c "+ (Date.now()-timerStart) + ' ms ', 'color:white;background-color:darkviolet'); 
-            //alert('Page loading took: ' +  ((Date.now()-timerStart)/1000).toFixed(2) + ' seconds' )
-        });
+    // window.addEventListener('load', function(){
+    //     console.log("Page load complete@: %c "+ (Date.now()-timerStart) + ' ms ', 'color:white;background-color:darkviolet'); 
+    //     alert('Page loading took: ' +  ((Date.now()-timerStart)/1000).toFixed(2) + ' seconds' )
+    // });
         
-        var docHeight = 0;
-        var winHeight = 0;
-        winHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    var docHeight = 0;
+    var winHeight = 0;
+    winHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-        var lastBottomPos = 0;
-        var alreadyLoading = false;
-        var newsArr1 = [];
-        var newsArr2 = [];
+    var lastBottomPos = 0;
+    var alreadyLoading = false;
+    var newsArr1 = [];
+    var newsArr2 = [];
 
-        findHighestNode(document.documentElement.childNodes);
-                
+    findHighestNode(document.documentElement.childNodes);
         
-        function findHighestNode(nodesList) {
-            for (var i = nodesList.length - 1; i >= 0; i--) {
-                if (nodesList[i].scrollHeight && nodesList[i].clientHeight) {
-                    var elHeight = Math.max(nodesList[i].scrollHeight, nodesList[i].clientHeight);
-                    docHeight = Math.max(elHeight, docHeight);
-                }
-                if (nodesList[i].childNodes.length) findHighestNode(nodesList[i].childNodes);
+    function findHighestNode(nodesList) {
+        for (var i = nodesList.length - 1; i >= 0; i--) {
+            if (nodesList[i].scrollHeight && nodesList[i].clientHeight) {
+                var elHeight = Math.max(nodesList[i].scrollHeight, nodesList[i].clientHeight);
+                docHeight = Math.max(elHeight, docHeight);
             }
+            if (nodesList[i].childNodes.length) findHighestNode(nodesList[i].childNodes);
         }
+    }
     </script>
 
     <style>
@@ -194,28 +215,28 @@
     </div>
 
     <script>
+        var track_data = {};
         // FETCH NEWS
         const fetchNews = async (query) => {
 
             let pageNumber = 1;
             let newsAppKey = 'DVj2UsFaFnN+3kn4VHWPS9hUiLCz4eOtblRfAUrDC50=';
-            let current_parameter = query;
  
-
             let timestamp = new Date().getTime();
-            let message_get = "cid=1&fields=data.rows.id%2Cdata.rows.title%2Cdata.rows.deepLinkUrl%2Cdata.rows.publishTime%2Cdata.rows.images%2Cdata.rows.source%2Cdata.rows.sourceLogo&langCode=hi&pageNumber=" + pageNumber + "&pageSize=7&partner=indus&puid=" + current_parameter + "&ts=" + timestamp + "GET";
+            let message_get = "cid=1&fields=data.rows.id%2Cdata.rows.title%2Cdata.rows.deepLinkUrl%2Cdata.rows.publishTime%2Cdata.rows.images%2Cdata.rows.source%2Cdata.rows.sourceLogo&langCode=hi&pageNumber=" + pageNumber + "&pageSize=15&partner=indus&puid=" + current_parameter + "&ts=" + timestamp + "GET";
             let hash_get = CryptoJS.HmacSHA1(message_get, "4IGAIGGb8z1nOGzpBiSeQA==");
             let hashInBase64_get = CryptoJS.enc.Base64.stringify(hash_get);
-            // let message_post = "partner=indus&puid=" + current_parameter + "&ts=" + timestamp + "POST"
-            // let hash_post = CryptoJS.HmacSHA1(message_post, "4IGAIGGb8z1nOGzpBiSeQA==");
-            // let hashInBase64_post = CryptoJS.enc.Base64.stringify(hash_post);
 
-            // let track_data = {
-            //     "viewedDate": timestamp,
-            //     "stories": []
-            // };
+            var message_post = "partner=indus&puid=" + current_parameter + "&ts=" + timestamp + "POST"
+            var hash_post = CryptoJS.HmacSHA1(message_post, "4IGAIGGb8z1nOGzpBiSeQA==");
+            var hashInBase64_post = CryptoJS.enc.Base64.stringify(hash_post);
 
-            let url = "https://feed.dailyhunt.in/api/v2/syndication/items?pageSize=7&fields=data.rows.id,data.rows.title,data.rows.deepLinkUrl,data.rows.publishTime,data.rows.images,data.rows.source,data.rows.sourceLogo&cid=1&langCode=hi&pageNumber=" + pageNumber + "&partner=indus&ts=" + timestamp + "&puid=" + current_parameter;
+            track_data = {
+                "viewedDate": timestamp,
+                "stories": []
+            };
+
+            let url = "https://feed.dailyhunt.in/api/v2/syndication/items?pageSize=15&fields=data.rows.id,data.rows.title,data.rows.deepLinkUrl,data.rows.publishTime,data.rows.images,data.rows.source,data.rows.sourceLogo&cid=1&langCode=hi&pageNumber=" + pageNumber + "&partner=indus&ts=" + timestamp + "&puid=" + current_parameter;
 
             await fetch(url, {
                 method: 'GET',
@@ -229,8 +250,19 @@
                 .then(res => {
                     if (res.code === 200) {
                         renderNews(res.data);
+
+                        for (var i = res.data.rows.length - 1; i >= 0; i--) {
+                            track_data.stories.unshift({
+                                "id": res.data.rows[i]['id'],
+                                "trackData": res.data.rows[i]['trackData']
+                            });
+                        }
+
+                        post_Tracking_Data(JSON.stringify(track_data), timestamp, current_parameter, hashInBase64_post);
                     }
                     else renderNews(false);
+
+
                 })
                 .catch(err => console.log(err))
         }
@@ -239,12 +271,9 @@
         //<-- cant put google add container creation code here becase this gets called only when news gets fetched from dailyhunts api; therefore google ad loading will get delayed by that much time
         const renderNews = data => {
             if (data && data.count > 0) {
-
                 //console.log("Creating news feed DOM....");
 
                 data.rows = data.rows.sort((a,b) => { return b.publishTime - a.publishTime }); // fix the orders BUG:dailyhunt
-                
-                
                 newsArr1 = data.rows.slice(0,10); // 10 render now
                 newsArr2 = data.rows.slice(10); // 15-10 = 5 for later use (Loadmore)
 
@@ -347,8 +376,9 @@
             var newsImgSz = big?"700x400_80":"60x60_60";
 
             if( (typeof i.images[0]!='undefined' )&& (i.images[0]!= null) && (i.images[0]!= '') )
-             imgSrc = i.images[0].replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, newsImgSz).replace(/{EXT}/g, "webp");
- 
+                imgSrc = i.images[0].replace(/{CMD}/g, "crop").replace(/{W}x{H}_{Q}/g, newsImgSz).replace(/{EXT}/g, "webp");
+            else
+                imgSrc = default_img;
             if(big)
             {
                 li.innerHTML = `<div class="top_div" >
@@ -428,6 +458,19 @@
 
             return li;
         }
+
+        function post_Tracking_Data(t_data, timestamp, current_parameter, hashInBase64_post) {
+            let response = fetch("https://track.dailyhunt.in/api/v2/syndication/tracking?partner=indus&ts=" + timestamp + "&puid=" + current_parameter, 
+            {
+                method: 'POST',
+              headers: {
+                "Authorization": "key=DVj2UsFaFnN+3kn4VHWPS9hUiLCz4eOtblRfAUrDC50=",
+                "Signature": hashInBase64_post,
+                "Content-Type": "application/json",
+              },
+              body: t_data
+            });
+      }
     </script>
 
     <script>
@@ -500,7 +543,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 // APPEND SITEPLUG SCRIPT
 let sitePlugFragment = document.createElement('script');
-sitePlugFragment.src = "https://kme46.siteplug.com/qlapi?o=kme46&s=88107&u=[domain]&f=json&n=8&i=1&is=36x36&di=&callback=fetchRecommends";
+sitePlugFragment.src = "https://kme46.siteplug.com/qlapi?o=kme46&s=88107&u=[domain]&f=json&n=8&i=1&is=36x36&di="+current_parameter+"&callback=fetchRecommends";
 document.body.appendChild(sitePlugFragment);
 
 // RECOMMENDED APPS
@@ -580,22 +623,18 @@ function addListenerMulti(element, eventNames, listener) {
 }
 
 addListenerMulti(search_dom_node, 'keyup', function(e){
-    var validInput = true;
-
-     if (validInput && e.keyCode === 13) {
+     if (e.keyCode === 13) {
         ga('send', 'event', 'ClickEvent', 'SearchEntered', search_dom_node.value, {
             hitCallback: function() {
                 document.querySelector('.site_suggest_ads').innerHTML = '';
                 redirectFunc(search_dom_node.value);
             }
         });
-
-    } else if (validInput) {
+    } else {
         searchFunc(search_dom_node.value);
         document.querySelector('.site_suggest_ads').innerHTML = '';
     }
 });
-
 
 document.getElementById('button-icon').addEventListener('click', (e) => {
         ga('send', 'event', 'ClickEvent', 'SearchClicked', search_dom_node.value, {
@@ -606,21 +645,15 @@ document.getElementById('button-icon').addEventListener('click', (e) => {
         });
 });
 
- 
 
 function searchFunc () {
-
     var query = document.getElementById('search_in_page').value;
-
-    //console.log(' : = '  + query + ' = :')
     let node = document.getElementById('search_siteplug');
     document.body.removeChild(node);
-
     let newNode = document.createElement('script');
     newNode.id = 'search_siteplug';
     var ver = Math.random();
-
-    newNode.src = 'https://cwc89.siteplug.com/sssapi?o=cwc89&s=61071&kw=' + query + '&itype=cs&f=json&i=1&it=1&is=36x36&n=5&af=1&di=&callback=renderSearchResult&ver='+ver;
+    newNode.src = 'https://cwc89.siteplug.com/sssapi?o=cwc89&s=61071&kw=' + query + '&itype=cs&f=json&i=1&it=1&is=36x36&n=5&af=1&di='+current_parameter+'&callback=renderSearchResult&ver='+ver;
     document.body.appendChild(newNode);
 }
 
@@ -699,11 +732,8 @@ function redirectFunc (query) {
 
     let newNode = document.createElement('script');
     newNode.id = 'site_redirect';
-    newNode.src = 'https://edd31.siteplug.com/sssapi?o=edd31&s=77160&kw=' + query + '&itype=cs&f=json&af=0&di=&callback=redirectMethod';
-//https://edd31.siteplug.com/sssapi?o=edd31&s=77160&kw=' + search_query + '&itype=cs&f=json&af=0&di=' + current_parameter,
-
+    newNode.src = 'https://edd31.siteplug.com/sssapi?o=edd31&s=77160&kw=' + query + '&itype=cs&f=json&af=0&di='+current_parameter+'&callback=redirectMethod';
     document.body.appendChild(newNode);
-
 }
 
 function redirectMethod(res) {
