@@ -74,9 +74,7 @@
 
     //ga(()=>{alert('ga loaded')});
 
-    ga('create', 'UA-47795566-10', function(tracker) { 
-        //console.log(tracker.get('clientId'));
-    });
+    ga('create', 'UA-47795566-10', 'auto');
     ga('send', 'pageview');        
 
     var timerStart = Date.now();
